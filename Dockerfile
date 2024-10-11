@@ -2,13 +2,14 @@ FROM php:8.2-apache as web
 
 RUN apt-get update && apt-get install -y \
     libzip-dev \
-    zip
+    zip \
+    libpq-dev # Добавляем библиотеку libpq-dev для работы с PostgreSQL
 
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 RUN a2enmod rewrite
 
-RUN docker-php-ext-install pdo_mysql zip
+RUN docker-php-ext-install pdo_mysql pdo_pgsql zip
 
 ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
