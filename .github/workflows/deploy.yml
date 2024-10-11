@@ -57,28 +57,6 @@ jobs:
         CACHE_STORE=${{ secrets.CACHE_STORE }}
         CACHE_PREFIX=${{ secrets.CACHE_PREFIX }}
     
-        MEMCACHED_HOST=${{ secrets.MEMCACHED_HOST }}
-    
-        REDIS_CLIENT=${{ secrets.REDIS_CLIENT }}
-        REDIS_HOST=${{ secrets.REDIS_HOST }}
-        REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}
-        REDIS_PORT=${{ secrets.REDIS_PORT }}
-    
-        MAIL_MAILER=${{ secrets.MAIL_MAILER }}
-        MAIL_HOST=${{ secrets.MAIL_HOST }}
-        MAIL_PORT=${{ secrets.MAIL_PORT }}
-        MAIL_USERNAME=${{ secrets.MAIL_USERNAME }}
-        MAIL_PASSWORD=${{ secrets.MAIL_PASSWORD }}
-        MAIL_ENCRYPTION=${{ secrets.MAIL_ENCRYPTION }}
-        MAIL_FROM_ADDRESS=${{ secrets.MAIL_FROM_ADDRESS }}
-        MAIL_FROM_NAME="${{ secrets.MAIL_FROM_NAME }}"
-    
-        AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}
-        AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_DEFAULT_REGION=${{ secrets.AWS_DEFAULT_REGION }}
-        AWS_BUCKET=${{ secrets.AWS_BUCKET }}
-        AWS_USE_PATH_STYLE_ENDPOINT=${{ secrets.AWS_USE_PATH_STYLE_ENDPOINT }}
-    
         VITE_APP_NAME="${{ secrets.APP_NAME }}"
         EOF
     
