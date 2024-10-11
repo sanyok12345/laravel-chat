@@ -31,7 +31,7 @@ jobs:
     - name: Deploy Docker container
       run: |
         docker run -d \
-          -p 9000:9000 \
+          -p 9000:80 \
           --name laravel-chat \
           --restart unless-stopped \
           laravel-chat
