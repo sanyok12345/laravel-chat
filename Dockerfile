@@ -11,11 +11,12 @@ RUN apt-get update && apt-get install -y \
     locales \
     zip \
     unzip \
+    libpq-dev \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install gd \
-    && docker-php-ext-install pdo_mysql
+    && docker-php-ext-install pdo_mysql pdo_pgsql
 
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
 COPY . /var/www
 
@@ -24,4 +25,5 @@ COPY --chown=www-data:www-data . /var/www
 USER www-data
 
 EXPOSE 9000
+
 CMD ["php-fpm"]
