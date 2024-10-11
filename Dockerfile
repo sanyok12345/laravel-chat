@@ -27,4 +27,4 @@ RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cac
 
 EXPOSE 80
 
-CMD ["sh", "-c", "php artisan migrate && apache2-foreground"]
+CMD ["apache2-foreground"]
