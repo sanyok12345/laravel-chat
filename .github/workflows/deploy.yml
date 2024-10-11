@@ -1,0 +1,45 @@
+name: laravel-chat
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: self-hosted
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+      with:
+        path: ${{ github.workspace }}
+
+    - name: Set up Docker Build
+      uses: docker/setup-buildx-action@v2
+
+    - name: Build Docker image locally
+      run: |
+        docker build -t laravel-chat \
+        ${{ github.workspace }}/.
+
+    - name: Stop and Remove existing container
+      run: |
+        docker stop laravel-chat || true
+        docker rm laravel-chat || true
+
+    - name: Deploy Docker container
+      run: |
+        docker run -d \
+          -p 9000:9000 \
+          --name laravel-chat \
+          --restart unless-stopped \
+          laravel-chat
+
+    - name: Check running container
+      run: |
+        docker ps -q -f name=laravel-chat | grep -q . && echo "Container is running" || echo "Container is not running"
+
+    - name: Clean up
+      run: |
+        rm -rf ${{ github.workspace }}/*
