@@ -12,16 +12,19 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
-      with:
-        path: ${{ github.workspace }}
+
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-scripts --no-dev --no-progress --no-interaction
+
+    - name: Run Laravel tests
+      run: php artisan test
 
     - name: Set up Docker Build
       uses: docker/setup-buildx-action@v2
 
     - name: Build Docker image locally
       run: |
-        docker build -t laravel-chat \
-        ${{ github.workspace }}/.
+        docker build -t laravel-chat .
 
     - name: Stop and Remove existing container
       run: |
@@ -32,6 +35,7 @@ jobs:
       run: |
         docker run -d \
           -p 9000:9000 \
+          --env-file .env \
           --name laravel-chat \
           --restart unless-stopped \
           laravel-chat
@@ -40,6 +44,6 @@ jobs:
       run: |
         docker ps -q -f name=laravel-chat | grep -q . && echo "Container is running" || echo "Container is not running"
 
-    - name: Clean up
+    - name: Clean up temporary files
       run: |
-        rm -rf ${{ github.workspace }}/*
+        rm -rf /tmp/*
