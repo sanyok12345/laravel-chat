@@ -76,7 +76,7 @@ jobs:
     - name: Deploy Docker container
       run: |
         docker run -d \
-          -p 80:80 \
+          -p 9000:80 \
           --name laravel-chat \
           --env-file .env \
           --restart unless-stopped \
