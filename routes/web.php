@@ -17,10 +17,11 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::post('/group-chats/{id}/add-user', [GroupChatController::class, 'addUserToGroupChat']);
     Route::post('/group-chats/{id}/remove-user', [GroupChatController::class, 'removeUserFromGroupChat']);
-    Route::get('/group-chats/{id}/get-users-in-group', [GroupChatController::class, 'getUsersInGroup']);
+    Route::get('/group-chats/{id}/get-group', [GroupChatController::class, 'getGroupChatInfo']);
     Route::get('/group-chats/get-groups', [GroupChatController::class, 'getGroups']);
-    Route::post('/group-chats/create', [GroupChatController::class, 'create']);
-    Route::post('/group-chats/send-message', [GroupChatController::class, 'sendMessage']);
+    Route::get('/group-chats/{id}/get-messages', [GroupChatController::class, 'getMessages']);
+    Route::post('/group-chats/create-group', [GroupChatController::class, 'createGroup']);
+    Route::post('/group-chats/{id}/send-message', [GroupChatController::class, 'sendMessage']);
 });
 
 require __DIR__.'/auth.php';

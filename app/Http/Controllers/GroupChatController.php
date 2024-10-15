@@ -12,16 +12,17 @@ class GroupChatController extends Controller
         $groups = GroupChat::with('name')->get();
         return response()->json($groups, 201);
     }
-    public function getUsersInGroup(Request $request, $groupChatId): \Illuminate\Http\JsonResponse
+
+    public function getGroupChatInfo(Request $request, $groupChatId): \Illuminate\Http\JsonResponse
     {
         $group = GroupChat::findOrFail($groupChatId);
-        $users = $group->users()->get();
 
-        return response()->json($users, 200);
+        return response()->json($group, 200);
     }
-    public function create(Request $request): \Illuminate\Http\JsonResponse
+
+    public function createGroup(Request $request): \Illuminate\Http\JsonResponse
     {
-        $group = GroupChat::create(['name' => $request->name]);
+        $group = GroupChat::create(['name' => $request->name], ['group_owner' => auth()->id()]);
         $group->users()->attach(auth()->id());
 
         return response()->json($group, 201);
@@ -45,10 +46,27 @@ class GroupChatController extends Controller
     public function removeUserFromGroupChat(Request $request, $groupChatId): \Illuminate\Http\JsonResponse
     {
         $groupChat = GroupChat::findOrFail($groupChatId);
+        if ($groupChat->users()->where('user_id', $request->input('user_id'))->doesntExist()) {
+            return response()->json(['message' => 'User is not in this group!'], 400);
+        }
+        if ($groupChat->users()->count() === 1) {
+            return response()->json(['message' => 'You cannot remove the last user from the group!'], 400);
+        }
+        if ($groupChat->users()->where('user_id', auth()->id())->doesntExist()) {
+            return response()->json(['message' => 'You are not allowed to remove users from this group!'], 400);
+        }
+
         $userId = $request->input('user_id');
 
-        //Detach user from groupchat
-        $groupChat->users()->detach($userId);
+        if ($groupChat->users()->where('user_id', auth()->id())->wherePivot('group_owner', 1)->exists()) {
+            // Admin (Group Owner) can remove any user
+            $groupChat->users()->detach($userId);
+        } elseif (auth()->id() === $userId) {
+            // The user can only remove themselves
+            $groupChat->users()->detach($userId);
+        } else {
+            return response()->json(['message' => 'Unauthorized action'], 403);
+        }
 
         return response()->json(['message' => 'User removed from group!'], 200);
     }
@@ -62,6 +80,13 @@ class GroupChatController extends Controller
         ]);
 
         return response()->json($message, 201);
+    }
+
+    public function getMessages($groupId)
+    {
+        $group = GroupChat::findOrFail($groupId);
+        $messages = $group->messages->get();
+        return response()->json($messages, 200);
     }
 
 }
