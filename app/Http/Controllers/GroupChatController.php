@@ -2,18 +2,24 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\GroupChat;
 use Illuminate\Http\Request;
 
 class GroupChatController extends Controller
 {
-    public function getGroups()
+    public function getGroups(): \Illuminate\Http\JsonResponse
     {
-        $groups = GroupChat::listAll();
-
+        $groups = GroupChat::with('name')->get();
         return response()->json($groups, 201);
     }
+    public function getUsersInGroup(Request $request, $groupChatId): \Illuminate\Http\JsonResponse
+    {
+        $group = GroupChat::findOrFail($groupChatId);
+        $users = $group->users()->get();
 
-    public function create(Request $request)
+        return response()->json($users, 200);
+    }
+    public function create(Request $request): \Illuminate\Http\JsonResponse
     {
         $group = GroupChat::create(['name' => $request->name]);
         $group->users()->attach(auth()->id());
@@ -21,7 +27,7 @@ class GroupChatController extends Controller
         return response()->json($group, 201);
     }
 
-    public function addUserToGroupChat(Request $request, $groupChatId)
+    public function addUserToGroupChat(Request $request, $groupChatId): \Illuminate\Http\JsonResponse
     {
         $groupChat = GroupChat::findOrFail($groupChatId);
         $userId = $request->input('user_id');
@@ -36,7 +42,7 @@ class GroupChatController extends Controller
         return response()->json(['message' => 'User added to group!'], 200);
     }
 
-    public function removeUserFromGroupChat(Request $request, $groupChatId)
+    public function removeUserFromGroupChat(Request $request, $groupChatId): \Illuminate\Http\JsonResponse
     {
         $groupChat = GroupChat::findOrFail($groupChatId);
         $userId = $request->input('user_id');
@@ -47,7 +53,7 @@ class GroupChatController extends Controller
         return response()->json(['message' => 'User removed from group!'], 200);
     }
 
-    public function sendMessage(Request $request, $groupId)
+    public function sendMessage(Request $request, $groupId): \Illuminate\Http\JsonResponse
     {
         $group = GroupChat::findOrFail($groupId);
         $message = $group->messages()->create([
