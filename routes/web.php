@@ -16,6 +16,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
     Route::post('/group-chats/{id}/add-user', [GroupChatController::class, 'addUserToGroupChat']);
+    Route::post('/group-chats/{id}/remove-user', [GroupChatController::class, 'removeUserFromGroupChat']);
 });
 
 require __DIR__.'/auth.php';
