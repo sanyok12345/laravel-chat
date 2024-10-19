@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Chats;
 
 use App\Http\Controllers\Controller;
 use App\Models\Message;
+use App\Models\Reaction;
 use Illuminate\Http\Request;
 
 class ChatController extends Controller
@@ -55,6 +56,34 @@ class ChatController extends Controller
             ]);
         }
         return response()->json($message);
+    }
+
+    public function reactToMessage(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $message = Message::find($request->message_id);
+        $reaction = Reaction::find($request->reaction_id);
+        $message->reactions()->attach($reaction, ['user_id' => auth()->id()]);
+        return response()->json($message->reactions);
+    }
+
+    public function unreactToMessage(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $message = Message::find($request->message_id);
+        $reaction = Reaction::find($request->reaction_id);
+        $message->reactions()->detach($reaction);
+        return response()->json($message->reactions);
+    }
+
+    public function getMessageReactions(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $message = Message::find($request->message_id);
+        return response()->json($message->reactions);
+    }
+
+    public function getMessageReactionsCount(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $message = Message::find($request->message_id);
+        return response()->json($message->reactions->count());
     }
 
     public function index(): \Illuminate\View\View
