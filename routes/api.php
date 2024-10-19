@@ -1,6 +1,6 @@
 <?php
 
-
+use App\Http\Controllers\Updates\LongPollingController;
 use App\Http\Controllers\Chats\GroupChatController;
 use App\Http\Middleware\Api\EnsureApiTokenIsValid;
 use Illuminate\Support\Facades\Route;
@@ -14,4 +14,6 @@ Route::middleware(EnsureApiTokenIsValid::class)->group(function () {
     Route::get('/group-chats/{id}/get-group', [GroupChatController::class, 'getGroupChatInfo']);
     Route::get('/group-chats/get-groups', [GroupChatController::class, 'getGroups']);
     Route::get('/group-chats/{id}/get-messages', [GroupChatController::class, 'getMessages']);
+
+    Route::get('/long-poll/messages', [LongPollingController::class, 'checkMessages']);
 });
