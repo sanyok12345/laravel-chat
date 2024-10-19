@@ -12,7 +12,7 @@ class LongPollingController extends Controller
     public function checkMessages(Request $request): \Illuminate\Http\JsonResponse
     {
         $lastMessageId = $request->input('last_message_id'); // Get the last message ID received by the client
-        $timeout = 30; // Timeout in seconds
+        $timeout = 4; // Timeout in seconds
         $startTime = time();
 
         // Polling loop (will check for new messages for up to 30 seconds)
