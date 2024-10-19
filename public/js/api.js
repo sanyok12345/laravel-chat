@@ -19,7 +19,7 @@ class API {
         xhr.onreadystatechange = () => {
             if (xhr.readyState === 4) {
                 if (xhr.status === 200) {
-                    callback(null, JSON.parse(xhr.responseText));
+                    callback(null, API.tryParseJSON(xhr.responseText));
                 } else {
                     callback(xhr.responseText);
                 }
@@ -27,5 +27,13 @@ class API {
         };
 
         xhr.send(JSON.stringify(data));   
+    }
+
+    static tryParseJSON(jsonString) {
+        try {
+            return JSON.parse(jsonString);
+        } catch (error) {
+            return null;
+        }
     }
 }

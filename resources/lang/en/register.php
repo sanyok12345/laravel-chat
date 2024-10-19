@@ -7,5 +7,5 @@ return [
     'confirm_password' => 'Confirm Password',
     'already_registered' => 'Already registered?',
     'register' => 'Register',
-    'register_to_laravelchat' => 'Register to LaravelChat',
+    'register_to_laravelchat' => 'Register to LaravelChat'
 ];

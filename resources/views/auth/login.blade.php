@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="{{ app()->getLocale() }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <title>Login</title>
+    <title>{{ __('login.login_to_laravelchat') }}</title>
     <style>
         .full-height {
             height: 100vh;
@@ -23,7 +23,7 @@
         <div class="form-container">
             <div class="text-center mb-4">
                 <img src="https://cdn-icons-png.flaticon.com/512/5962/5962463.png" alt="ChatApp Logo" style="width: 96px; height: 96px;">
-                <h2>Login to LaravelChat</h2>
+                <h2>{{ __('login.login_to_laravelchat') }}</h2>
             </div>
             @if (session('status'))
                 <div class="alert alert-success mb-4">
@@ -33,26 +33,26 @@
             <form method="POST" action="{{ route('login') }}">
                 @csrf
                 <div class="form-group">
-                    <label for="email">{{ __('Email') }}</label>
-                    <input id="email" type="email" class="form-control" name="email" value="{{ old('email') }}" required autofocus autocomplete="username">
+                    <label for="email">{{ __('login.email') }}</label>
+                    <input id="email" type="email" class="form-control" name="email" value="{{ old('email') }}" required>
                     @if ($errors->has('email'))
                         <span class="text-danger">{{ $errors->first('email') }}</span>
                     @endif
                 </div>
                 <div class="form-group mt-3">
-                    <label for="password">{{ __('Password') }}</label>
-                    <input id="password" type="password" class="form-control" name="password" required autocomplete="current-password">
+                    <label for="password">{{ __('login.password') }}</label>
+                    <input id="password" type="password" class="form-control" name="password" required>
                     @if ($errors->has('password'))
                         <span class="text-danger">{{ $errors->first('password') }}</span>
                     @endif
                 </div>
                 <div class="form-group form-check mt-3">
                     <input id="remember_me" type="checkbox" class="form-check-input" name="remember">
-                    <label class="form-check-label" for="remember_me">{{ __('Remember me') }}</label>
+                    <label class="form-check-label" for="remember_me">{{ __('login.remember_me') }}</label>
                 </div>
                 <div class="d-flex justify-content-between align-items-center mt-4">
-                    <a href="{{ route('register') }}" class="text-muted">{{ __('Don\'t have an account?') }}</a>
-                    <button type="submit" class="btn btn-primary btn-custom">{{ __('Log in') }}</button>
+                    <a href="{{ route('register') }}" class="text-muted">{{ __('login.dont_have_account') }}</a>
+                    <button type="submit" class="btn btn-primary btn-custom">{{ __('login.log_in') }}</button>
                 </div>
             </form>
         </div>

@@ -19,7 +19,7 @@ class UserController extends Controller
             'password' => Hash::make($request->password),
         ]);
 
-        return redirect()->route('dashboard');
+        return redirect()->route('chat');
     }
 
     public function promote(Request $request): \Illuminate\Http\RedirectResponse
@@ -27,13 +27,13 @@ class UserController extends Controller
         $user = User::find($request->id);
         $user->role = 'admin';
         $user->save();
-        return redirect()->route('dashboard');
+        return redirect()->route('chat');
     }
 
     public function login(Request $request): \Illuminate\Http\RedirectResponse
     {
         if (Auth::attempt($request->only('email', 'password'))) {
-            return redirect()->route('dashboard');
+            return redirect()->route('chat');
         }
         return back()->withErrors([
             'email' => 'The provided credentials do not match our records.',
@@ -44,7 +44,7 @@ class UserController extends Controller
     public function logout(): \Illuminate\Http\RedirectResponse
     {
         Auth::logout();
-        return redirect()->route('home');
+        return redirect()->route('login');
     }
 
 

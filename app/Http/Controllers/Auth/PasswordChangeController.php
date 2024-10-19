@@ -13,7 +13,7 @@ class PasswordChangeController extends Controller
 
     public function changePassword(Request $request): \Illuminate\Http\RedirectResponse
     {
-        $request = validate([
+        $request = $request->validate([
             'old_password' => 'required|string',
             'password' => 'required|string|confirmed|min:8',
         ]);
@@ -22,7 +22,7 @@ class PasswordChangeController extends Controller
             return back()->withErrors(['old_password' => 'The provided password does not match our records.']);
         }
 
-        \Illuminate\Support\Facades\Auth::user()->forceFill([
+        \Illuminate\Support\Facades\Auth::user()->update([
             'password' => \Illuminate\Support\Facades\Hash::make($request->password),
         ])->save();
 
