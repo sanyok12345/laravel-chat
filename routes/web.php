@@ -19,12 +19,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route::get('/profile/update-password', [UpdatePasswordController::class, 'update'])->name('password.edit');
-    Route::post('/profile/update-password', [UpdatePasswordController::class, 'store']);
-    Route::get('/profile/update-email', [UpdateEmailController::class, 'update'])->name('email.edit');
-    Route::post('/profile/update-email', [UpdateEmailController::class, 'store']);
-    Route::get('/profile/change-username', [UpdateUserNameController::class, 'update'])->name('username.edit');
-    Route::post('/profile/change-username', [UpdateUserNameController::class, 'store']);
+
 
 });
 

@@ -22,6 +22,14 @@ class UserController extends Controller
         return redirect()->route('dashboard');
     }
 
+    public function promote(Request $request): \Illuminate\Http\RedirectResponse
+    {
+        $user = User::find($request->id);
+        $user->role = 'admin';
+        $user->save();
+        return redirect()->route('dashboard');
+    }
+
     public function login(Request $request): \Illuminate\Http\RedirectResponse
     {
         if (Auth::attempt($request->only('email', 'password'))) {

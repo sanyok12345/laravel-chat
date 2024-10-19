@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\Auth\UpdateEmailController;
+use App\Http\Controllers\Auth\UpdatePasswordController;
+use App\Http\Controllers\Auth\UpdateUserNameController;
 use App\Http\Controllers\Auth\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -22,9 +25,12 @@ Route::middleware('guest')->group(function () {
 
 });
 Route::middleware('auth')->group(function () {
-    Route::get('change-password', [UserController::class, 'showChangeForm'])
-        ->name('password.change');
-    Route::post('change-password', [UserController::class, 'changePassword']);
+    Route::get('/profile/update-password', [UpdatePasswordController::class, 'update'])->name('password.edit');
+    Route::post('/profile/update-password', [UpdatePasswordController::class, 'store']);
+    Route::get('/profile/update-email', [UpdateEmailController::class, 'update'])->name('email.edit');
+    Route::post('/profile/update-email', [UpdateEmailController::class, 'store']);
+    Route::get('/profile/change-username', [UpdateUserNameController::class, 'update'])->name('username.edit');
+    Route::post('/profile/change-username', [UpdateUserNameController::class, 'store']);
 
     Route::post('logout', [UserController::class, 'logout'])
         ->name('logout');
