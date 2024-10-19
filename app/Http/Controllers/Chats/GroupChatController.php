@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Chats;
 
+use App\Http\Controllers\Controller;
 use App\Models\GroupChat;
 use Illuminate\Http\Request;
 

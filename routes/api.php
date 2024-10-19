@@ -1,8 +1,8 @@
 <?php
 
 
-use App\Http\Controllers\GroupChatController;
-use App\Http\Middleware\EnsureApiTokenIsValid;
+use App\Http\Controllers\Chats\GroupChatController;
+use App\Http\Middleware\Api\EnsureApiTokenIsValid;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware(EnsureApiTokenIsValid::class)->group(function () {
