@@ -24,7 +24,9 @@ class API {
 
         xhr.onreadystatechange = () => {
             if (xhr.readyState === 4) {
-                if (xhr.status === 200) {
+                if ([
+                    200, 201, 204
+                ].includes(xhr.status)) {
                     callback(null, API.tryParseJSON(xhr.responseText));
                 } else {
                     callback(xhr.responseText);
@@ -52,9 +54,25 @@ class Client extends API {
         return this.call('GET', '/api/messages');
     }
 
+    static async getLatestEvents() {
+        const r = await this.call('GET', `/api/long-poll/messages`, {
+            last_message_id: Client.lastMessageId
+        });
+
+        if (r && r.new_messages) {
+            Client.lastMessageId = r.new_messages[r.new_messages.length - 1].id;
+        }
+
+        return r.new_messages || [];
+    }
+
     static async sendMessage(message) {
-        return this.call('POST', '/api/messages', { 
+        return await this.call('POST', '/api/messages', { 
             message 
         });
+    }
+
+    static async getProfile() {
+        return await this.call('GET', '/get-profile');
     }
 }
