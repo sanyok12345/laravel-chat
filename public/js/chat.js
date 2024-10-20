@@ -114,12 +114,5 @@ document.addEventListener('DOMContentLoaded', async () => {
     await preloadProfile();
     await loadMessagesFromAPI();
     listenForMessages();
-
-    const form = document.getElementById('form');
-    form.addEventListener('submit', event => {
-        event.preventDefault();
-        handleSendMessage();
-    });
-
     scrollChatToBottom();
 });
