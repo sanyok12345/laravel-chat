@@ -1,16 +1,29 @@
 Client.getMessages().then(messages => {
-    const div = document.createElement('div');
-
+    const messagesContainer = document.getElementById('messages');
+    
+    messagesContainer.classList.remove('loading');
+    messagesContainer.innerHTML = '';
     messages.forEach(message => {
-        div.innerHTML = `<strong>${message.user_id}</strong>: ${message.message}`;
-        document.querySelector('div').appendChild(div);
+        const div = document.createElement('div');
+        div.classList.add('chat-message');
+        div.innerHTML = `
+            <strong>${message.user_id}</strong>
+            ${message.message}
+        `;
+        messagesContainer.appendChild(div);
     });
 });
 
-const handleSendMessage = (event) => {
-    const message = document.querySelector('input').value;
+const handleSendMessage = () => {
+    const input = document.getElementById('text');
+    const messagesContainer = document.getElementById('messages');
 
-    Client.sendMessage(message).then(() => {
-        document.querySelector('input').value = '';
+    Client.sendMessage(input.value).then(() => {
+        const div = document.createElement('div');
+        div.classList.add('chat-message');
+        div.innerHTML = `<strong>You</strong>: ${input.value}`;
+        messagesContainer.appendChild(div);
+        input.value = '';
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
     });
 };
