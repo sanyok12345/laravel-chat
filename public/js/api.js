@@ -44,3 +44,18 @@ class API {
         }
     }
 }
+
+class Client extends API {
+    static isPolling = false;
+    static lastMessageId = 0;
+
+    static async getMessages() {
+        return this.call('GET', '/api/messages');
+    }
+
+    static async sendMessage(message) {
+        return this.call('POST', '/api/messages', { 
+            message 
+        });
+    }
+}

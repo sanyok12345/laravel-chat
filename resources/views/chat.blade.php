@@ -7,11 +7,13 @@
             @csrf
             <button type="submit">Logout</button>
         </form>
+        <div>
+            <div>
+                <input type="text" id="message" placeholder="Type your message">
+                <button onclick="handleSendMessage()">Send</button>
+            </div>
+        </div>
         <script src={{ asset('js/api.js') }}></script>
-        <script>
-            API.call('GET', '/api/long-poll/messages', null, (response) => {
-                console.log(response);
-            });
-        </script>
+        <script src={{ asset('js/chat.js') }}></script>
     </body>
 </html>
