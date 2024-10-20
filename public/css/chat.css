@@ -51,6 +51,16 @@
     display: block;
 }
 
+.chat-message.incoming {
+    align-self: flex-start;
+    background-color: #ffffff;
+}
+
+.chat-message.outgoing {
+    align-self: flex-end;
+    background-color: #dcf8c6;
+}
+
 .chat-input {
     display: flex;
     padding: 10px;
