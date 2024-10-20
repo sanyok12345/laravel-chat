@@ -20,7 +20,6 @@ class API {
         const xhr = new XMLHttpRequest();
         xhr.open(method, url, true);
         xhr.setRequestHeader('Content-Type', 'application/json');
-        xhr.setRequestHeader('Accept', 'application/json');
         xhr.setRequestHeader('api-token', API.token());
 
         xhr.onreadystatechange = () => {
