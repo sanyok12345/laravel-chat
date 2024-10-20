@@ -11,7 +11,7 @@ const listenForMessages = () => {
     const poll = async () => {
         try {
             const messages = await Client.getLatestEvents();
-            if (messages.length >= 0) {
+            if (messages.length > 0) {
                 updateLocalChatHistory(messages);
                 renderMessages(messages);
             }
@@ -26,22 +26,20 @@ const listenForMessages = () => {
 };
 
 const updateLocalChatHistory = (messages) => {
-    messages
-        .sort((a, b) => b.id - a.id)
-        .forEach(message => {
-            const existingMessage = localChatHistory.find(m => m.id === message.id);
-            if (!existingMessage) {
-                localChatHistory.push({
-                    ...message,
-                    isOutgoing: message.user?.id === user.id
-                });
-            }
-        });
+    messages.forEach(message => {
+        const existingMessage = localChatHistory.find(m => m.id === message.id);
+        if (!existingMessage) {
+            localChatHistory.push({
+                ...message,
+                isOutgoing: message.user?.id === user.id
+            });
+        }
+    });
 };
 
 const renderMessages = (messages) => {
     const messagesContainer = document.getElementById('messages');
-    
+
     if (messagesContainer.classList.contains('loading')) {
         const loader = messagesContainer.getElementsByTagName('img')[0];
         if (loader) {
@@ -52,24 +50,23 @@ const renderMessages = (messages) => {
 
     messages.forEach(message => {
         const existingMessage = document.querySelector(`.chat-message[data-id="${message.id}"]`);
-        
+
         if (!existingMessage) {
             const div = document.createElement('div');
             div.classList.add('chat-message');
             div.setAttribute('data-id', message.id);
 
             const isOutgoing = message.user?.id === user.id;
-            
             div.classList.add(isOutgoing ? 'outgoing' : 'incoming');
             div.innerHTML = `
                 <strong>${message.user?.name || "User"}</strong>
                 ${message.message}
             `;
             messagesContainer.appendChild(div);
-
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
         }
     });
+
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
 };
 
 const handleSendMessage = async () => {
