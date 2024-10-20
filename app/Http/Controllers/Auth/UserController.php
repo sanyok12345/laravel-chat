@@ -71,7 +71,7 @@ class UserController extends Controller
 
     public function getMe(): \Illuminate\Http\JsonResponse
     {
-        return response()->json(auth()->user());
+        return response()->json(auth()->user()->only('id', 'name', 'username'));
     }
 
     public function showRegistrationForm(): \Illuminate\View\View

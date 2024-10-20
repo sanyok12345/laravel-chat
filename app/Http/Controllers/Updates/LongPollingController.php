@@ -13,7 +13,9 @@ class LongPollingController extends Controller
     {
         $lastMessageId = $request->input('last_message_id', 0);
 
-        $newMessages = Message::where('id', '>', $lastMessageId)->get();
+        $newMessages = Message::where('id', '>', $lastMessageId)
+            ->with('user:id,name')
+            ->get();
 
         return response()->json(['new_messages' => $newMessages]);
     }
