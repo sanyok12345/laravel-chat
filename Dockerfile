@@ -3,7 +3,12 @@ FROM php:8.2-apache as web
 RUN apt-get update && apt-get install -y \
     libzip-dev \
     zip \
-    libpq-dev
+    libpq-dev \
+    libcurl4-openssl-dev \
+    pkg-config \
+    libssl-dev
+
+RUN pecl install pecl_http && docker-php-ext-enable http
 
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
