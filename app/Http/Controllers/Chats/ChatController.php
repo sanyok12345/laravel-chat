@@ -45,7 +45,10 @@ class ChatController extends Controller
     // Retrieve all messages
     public function getMessages(): \Illuminate\Http\JsonResponse
     {
-        return response()->json(Message::all());
+        //add name field from users table to messages
+        $messages = Message::with('user:id,name')->get();
+
+        return response()->json($messages);
     }
 
     // Delete a message

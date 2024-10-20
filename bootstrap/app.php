@@ -15,6 +15,9 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->appendToGroup('web', [
             \App\Http\Middleware\Api\EnsureApiTokenIsValid::class,
         ]);
+        $middleware->appendToGroup('api', [
+            \App\Http\Middleware\Api\EnsureApiTokenIsValid::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         //
