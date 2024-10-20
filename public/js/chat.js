@@ -11,7 +11,7 @@ const listenForMessages = () => {
     const poll = async () => {
         try {
             const messages = await Client.getLatestEvents();
-            if (messages.length > 0) {
+            if (messages.length >= 0) {
                 updateLocalChatHistory(messages);
                 renderMessages(messages);
             }
