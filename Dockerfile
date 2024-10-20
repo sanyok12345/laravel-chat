@@ -6,7 +6,10 @@ RUN apt-get update && apt-get install -y \
     libpq-dev \
     libcurl4-openssl-dev \
     pkg-config \
-    libssl-dev
+    libssl-dev \
+    libicu-dev
+
+RUN pecl install raphf && docker-php-ext-enable raphf
 
 RUN pecl install pecl_http && docker-php-ext-enable http
 
