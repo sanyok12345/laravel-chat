@@ -81,6 +81,7 @@ const handleSendMessage = async () => {
         input.value = '';
         updateLocalChatHistory([newMessage]);
         renderMessages([newMessage]);
+        scrollChatToBottom();
     } catch (error) {
         console.error(error);
     }
@@ -104,6 +105,11 @@ const loadMessagesFromAPI = async () => {
     }
 };
 
+const scrollChatToBottom = () => {
+    const messagesContainer = document.getElementById('messages');
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+};
+
 document.addEventListener('DOMContentLoaded', async () => {
     await preloadProfile();
     await loadMessagesFromAPI();
@@ -114,4 +120,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         event.preventDefault();
         handleSendMessage();
     });
+
+    scrollChatToBottom();
 });
