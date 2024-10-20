@@ -59,8 +59,10 @@ class Client extends API {
             last_message_id: Client.lastMessageId
         });
 
-        if (r && r.new_messages) {
+        if (r && r.new_messages && r.new_messages.length > 0) {
             Client.lastMessageId = r.new_messages[r.new_messages.length - 1]?.id || 0;
+        } else {
+            Client.lastMessageId = 0;
         }
 
         return r.new_messages || [];
