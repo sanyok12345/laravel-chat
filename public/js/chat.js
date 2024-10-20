@@ -65,8 +65,6 @@ const renderMessages = (messages) => {
             messagesContainer.appendChild(div);
         }
     });
-
-    messagesContainer.scrollTop = messagesContainer.scrollHeight;
 };
 
 const handleSendMessage = async () => {
