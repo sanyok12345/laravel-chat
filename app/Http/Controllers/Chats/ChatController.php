@@ -88,7 +88,7 @@ class ChatController extends Controller
 
     public function index(): \Illuminate\View\View
     {
-        return view('chat.index');
+        return view('chat.index',['apiToken' => auth()->user()->token]);
     }
 
 }

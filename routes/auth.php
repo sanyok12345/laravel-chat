@@ -32,6 +32,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile/change-username', [UpdateUserNameController::class, 'update'])->name('username.edit');
     Route::post('/profile/change-username', [UpdateUserNameController::class, 'store']);
 
+    Route::get('/profile/token', [UserController::class, 'getToken'])
+        ->name('token');
+
     Route::post('logout', [UserController::class, 'logout'])
         ->name('logout');
 

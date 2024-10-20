@@ -17,6 +17,7 @@ class UserController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'token' => bin2hex(random_bytes(32)),
         ]);
 
         return redirect()->route('chat');
@@ -33,6 +34,7 @@ class UserController extends Controller
     public function login(Request $request): \Illuminate\Http\RedirectResponse
     {
         if (Auth::attempt($request->only('email', 'password'))) {
+            auth()->user()->token = bin2hex(random_bytes(32));
             return redirect()->route('chat');
         }
         return back()->withErrors([
@@ -44,7 +46,7 @@ class UserController extends Controller
     public function logout(): \Illuminate\Http\RedirectResponse
     {
         Auth::logout();
-        return redirect()->route('login');
+        return redirect()->route('home');
     }
 
 

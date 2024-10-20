@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware\Api;
 
+use App\Models\User;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,7 +16,7 @@ class EnsureApiTokenIsValid
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if ($request->header('Authorization') !== 'Bearer ' . env('API_TOKEN')) {
+        if ($request->header('Authorization') !== User::class->token) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
 
