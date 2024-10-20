@@ -46,6 +46,7 @@ class UserController extends Controller
             $user = auth()->user();
             $user->token = bin2hex(random_bytes(32));
             $user->save();
+            Auth::login($user);
             return redirect()->route('chat')->with('apiToken', $user->token);
         }
         return back()->withErrors([

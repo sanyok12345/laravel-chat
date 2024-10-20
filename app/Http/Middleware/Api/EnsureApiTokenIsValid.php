@@ -16,10 +16,14 @@ class EnsureApiTokenIsValid
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $user = auth()->user();
+        if (!$request->expectsJson()) {
+            return $next($request);
+        }
+
+        $user = Auth::user();
 
         if (!$user || $request->header('api-token') !== $user->token) {
-            return response()->json(['message' => 'Unauthorized', 'token' => $request->header('api-token')], 401);
+            return response()->json(['message' => 'Unauthorized', 'token' => $request->header('api-token'), 'user' => $user, 'Auth_check' => Auth::check()], 401);
         }
 
         return $next($request);

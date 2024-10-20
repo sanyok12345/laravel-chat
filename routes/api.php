@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Chats\ReactionController;
 use \App\Http\Middleware\Api\EnsureApiTokenIsValid;
 
-Route::middleware(EnsureApiTokenIsValid::class)->group(function () {
+Route::middleware('api')->group(function () {
     //Messages
     Route::get('/messages', [ChatController::class, 'getMessages']);
     Route::post('/messages', [ChatController::class, 'sendMessage']);

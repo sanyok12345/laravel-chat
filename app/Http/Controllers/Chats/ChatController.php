@@ -14,6 +14,8 @@ class ChatController extends Controller
         $message = Message::create([
             'user_id' => auth()->id(),
             'message' => $request->message,
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
 
         return response()->json($message, 201);
@@ -53,6 +55,7 @@ class ChatController extends Controller
         } else {
             $message->update([
                 'message' => $request->message,
+                'updated_at' => now(),
             ]);
         }
         return response()->json($message);
