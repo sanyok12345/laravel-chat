@@ -26,7 +26,9 @@ const listenForMessages = () => {
 };
 
 const updateLocalChatHistory = (messages) => {
-    messages.forEach(message => {
+    messages
+    .sort((a, b) => b.id - a.id)
+    .forEach(message => {
         const existingMessage = localChatHistory.find(m => m.id === message.id);
         if (!existingMessage) {
             localChatHistory.push({
