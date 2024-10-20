@@ -18,7 +18,7 @@ const listenForMessages = () => {
         } catch (error) {
             console.error(error);
         } finally {
-            setTimeout(poll, 2000);
+            setTimeout(poll, 250);
         }
     };
 
