@@ -3,8 +3,7 @@ FROM php:8.2-apache as web
 RUN apt-get update && apt-get install -y \
     libzip-dev \
     zip \
-    libpq-dev \
-    php-http
+    libpq-dev
 
 RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
