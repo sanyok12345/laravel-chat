@@ -27,16 +27,16 @@ const listenForMessages = () => {
 
 const updateLocalChatHistory = (messages) => {
     messages
-    .sort((a, b) => b.id - a.id)
-    .forEach(message => {
-        const existingMessage = localChatHistory.find(m => m.id === message.id);
-        if (!existingMessage) {
-            localChatHistory.push({
-                ...message,
-                isOutgoing: message.user?.id === user.id
-            });
-        }
-    });
+        .sort((a, b) => b.id - a.id)
+        .forEach(message => {
+            const existingMessage = localChatHistory.find(m => m.id === message.id);
+            if (!existingMessage) {
+                localChatHistory.push({
+                    ...message,
+                    isOutgoing: message.user?.id === user.id
+                });
+            }
+        });
 };
 
 const renderMessages = (messages) => {
@@ -99,8 +99,19 @@ const preloadProfile = async () => {
     user.nickname = r.nickname;
 };
 
+const loadMessagesFromAPI = async () => {
+    try {
+        const messages = await Client.getMessages();
+        updateLocalChatHistory(messages);
+        renderMessages(messages);
+    } catch (error) {
+        console.error('Ошибка при загрузке сообщений:', error);
+    }
+};
+
 document.addEventListener('DOMContentLoaded', async () => {
     await preloadProfile();
+    await loadMessagesFromAPI();
     listenForMessages();
 
     const form = document.getElementById('form');
