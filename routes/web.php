@@ -2,18 +2,16 @@
 
 use App\Http\Controllers\Profiles\ProfileController;
 use Illuminate\Support\Facades\Route;
-use \App\Http\Controllers\Auth\UpdateEmailController;
-use \App\Http\Controllers\Auth\UpdateUserNameController;
-use \App\Http\Controllers\Auth\UpdatePasswordController;
 use Illuminate\Support\Facades\Auth;
 
 Route::get('/', function () {
     if (Auth::check()) {
-        return view('chat');
+        $apiToken = auth()->user()->token;
+        return view('chat', ['apiToken' => $apiToken]);
     }
-
     return view('login');
 })->middleware(['auth', 'verified'])->name('chat');
+
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

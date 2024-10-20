@@ -5,8 +5,9 @@ use App\Http\Controllers\Updates\LongPollingController;
 use App\Http\Controllers\Chats\ChatController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Chats\ReactionController;
+use \App\Http\Middleware\Api\EnsureApiTokenIsValid;
 
-Route::middleware('auth')->group(function () {
+Route::middleware(EnsureApiTokenIsValid::class)->group(function () {
     //Messages
     Route::get('/messages', [ChatController::class, 'getMessages']);
     Route::post('/messages', [ChatController::class, 'sendMessage']);

@@ -23,6 +23,13 @@
                         <span class="text-danger">{{ $errors->first('name') }}</span>
                     @endif
                 </div>
+                <div class="form-group">
+                    <label for="name">{{ __('register.username') }}</label>
+                    <input id="username" type="text" class="form-control" name="username" value="{{ old('username') }}" required>
+                    @if ($errors->has('username'))
+                        <span class="text-danger">{{ $errors->first('username') }}</span>
+                    @endif
+                </div>
                 <div class="form-group mt-3">
                     <label for="email">{{ __('register.email') }}</label>
                     <input id="email" type="email" class="form-control" name="email" value="{{ old('email') }}" required>
