@@ -14,6 +14,11 @@ class ChatController extends Controller
     // Utility method to fetch authenticated user by API token
     private function getAuthenticatedUser($apiToken)
     {
+        if (is_null($apiToken)) {
+            return response()->json([
+                'message' => 'Unauthorized, token is null',
+            ], 401);
+        }
         return User::where('token', $apiToken)->first();
     }
 
@@ -24,7 +29,7 @@ class ChatController extends Controller
             'message' => 'required|string',
         ]);
 
-        $user = $this->getAuthenticatedUser($request->apiToken);
+        $user = $this->getAuthenticatedUser($request->header('api-token'));
 
         if (!$user) {
             return response()->json(['message' => 'Unauthorized'], 401);
@@ -58,7 +63,7 @@ class ChatController extends Controller
             'id' => 'required|integer',
         ]);
 
-        $user = $this->getAuthenticatedUser($request->apiToken);
+        $user = $this->getAuthenticatedUser($request->header('api-token'));
 
         if (!$user) {
             return response()->json(['message' => 'Unauthorized'], 401);
@@ -83,7 +88,7 @@ class ChatController extends Controller
             'message' => 'required|string',
         ]);
 
-        $user = $this->getAuthenticatedUser($request->apiToken);
+        $user = $this->getAuthenticatedUser($request->header('api-token'));
 
         if (!$user) {
             return response()->json(['message' => 'Unauthorized'], 401);
@@ -111,7 +116,7 @@ class ChatController extends Controller
             'reaction_id' => 'required|integer',
         ]);
 
-        $user = $this->getAuthenticatedUser($request->apiToken);
+        $user = $this->getAuthenticatedUser($request->header('api-token'));
 
         if (!$user) {
             return response()->json(['message' => 'Unauthorized'], 401);
