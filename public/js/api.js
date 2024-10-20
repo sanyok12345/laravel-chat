@@ -60,7 +60,7 @@ class Client extends API {
         });
 
         if (r && r.new_messages) {
-            Client.lastMessageId = r.new_messages[r.new_messages.length - 1].id;
+            Client.lastMessageId = r.new_messages[r.new_messages.length - 1]?.id || 0;
         }
 
         return r.new_messages || [];
