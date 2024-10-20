@@ -68,6 +68,7 @@ class UserController extends Controller
         Auth::logout();
         return redirect()->route('login');
     }
+
     public function getMe(): \Illuminate\Http\JsonResponse
     {
         return response()->json(auth()->user());

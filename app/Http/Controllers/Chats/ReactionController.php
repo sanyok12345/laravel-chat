@@ -11,8 +11,7 @@ class ReactionController extends Controller
 {
     public function getReactionNames(Request $request): \Illuminate\Http\JsonResponse
     {
-        $message = Message::find($request->message_id);
-        return response()->json($message->reactions->pluck('name'));
+        return response()->json(Reaction::all()->pluck('name', 'id'));
     }
 
     public function addNewReaction(Request $request): \Illuminate\Http\JsonResponse

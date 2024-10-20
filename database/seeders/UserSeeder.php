@@ -23,6 +23,7 @@ class UserSeeder extends Seeder
                 'name' => 'Test'.Str::random(10),
                 'email' => 'testmail'.Str::random(10) . '@example.com',
                 'password' => Hash::make($password),
+                'token' => bin2hex(random_bytes(32)),
             ]);
         }
     }
