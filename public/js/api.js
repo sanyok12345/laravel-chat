@@ -1,4 +1,9 @@
 class API {
+    static token() {
+        const token = document.querySelector('meta[name="api-token"]');
+        return token ? token.content : '';
+    }
+
     static call(method, url, data, callback) {
         if (typeof callback !== 'function') {
             return new Promise((resolve, reject) => {
@@ -16,6 +21,8 @@ class API {
         xhr.open(method, url, true);
         xhr.setRequestHeader('Content-Type', 'application/json');
         xhr.setRequestHeader('Accept', 'application/json');
+        xhr.setRequestHeader('api-token', API.token());
+
         xhr.onreadystatechange = () => {
             if (xhr.readyState === 4) {
                 if (xhr.status === 200) {
