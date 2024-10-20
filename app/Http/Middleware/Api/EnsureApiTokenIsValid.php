@@ -16,20 +16,28 @@ class EnsureApiTokenIsValid
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!$request->expectsJson()) {
-            return $next($request);
+        $apiToken = $request->header('api-token');
+
+        // Check if the token is null
+        if (is_null($apiToken)) {
+            return response()->json([
+                'message' => 'Unauthorized',
+                'token' => $apiToken,
+                'user' => null,
+                'Auth_check' => auth()->check(),
+            ], 401);
         }
 
         // Retrieve the user by their API token
-        $user = User::where('token', $request->header('api-token'))->first();
+        $user = User::where('token', $apiToken)->first();
 
         // Check if user exists and the token matches
-        if (!$user || $request->header('api-token') !== $user->token) {
+        if (!$user || $apiToken !== $user->token) {
             return response()->json([
-                'message' => 'Unauthorized',
-                'token' => $request->header('api-token'),
+                'message' => 'Unauthorized after token check',
+                'token' => $apiToken,
                 'user' => $user,
-                'Auth_check' => auth()->check(), // Use `auth()->check()` instead of `Auth::check()`
+                'Auth_check' => auth()->check(),
             ], 401);
         }
 
