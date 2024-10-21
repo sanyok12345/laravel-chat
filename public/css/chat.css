@@ -111,4 +111,25 @@
         height: 100vh;
         border-radius: 0;
     }
+
+    .chat-header h4 {
+        font-size: 1.2em;
+    }
+
+    .chat-message {
+        font-size: 0.9em;
+    }
+
+    .chat-input input {
+        font-size: 0.9em;
+    }
+
+    .chat-header img {
+        height: 28px;
+        width: 28px;
+    }
+
+    .chat-input {
+        padding: 5px;
+    }
 }

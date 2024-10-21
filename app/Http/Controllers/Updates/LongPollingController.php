@@ -15,6 +15,7 @@ class LongPollingController extends Controller
 
         $newMessages = Message::where('id', '>', $lastMessageId)
             ->with('user:id,name')
+            ->with('replies:id,message_id,user_id,reply')
             ->get();
 
         return response()->json(['new_messages' => $newMessages]);

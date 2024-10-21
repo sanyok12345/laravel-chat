@@ -58,13 +58,16 @@ class Client extends API {
         const r = await this.call('GET', `/api/long-poll/messages`, {
             last_message_id: Client.lastMessageId
         });
-
-        if (r && r.new_messages) {
-            Client.lastMessageId = r.new_messages[r.new_messages.length - 1].id;
+    
+        if (r && Array.isArray(r.new_messages) && r.new_messages.length > 0) {
+            Client.lastMessageId = r.new_messages[r.new_messages.length - 1]?.id || 0;
+            return r.new_messages;
+        } else {
+            Client.lastMessageId = 0;
+            return [];
         }
-
-        return r.new_messages || [];
     }
+    
 
     static async sendMessage(message) {
         return await this.call('POST', '/api/messages', { 

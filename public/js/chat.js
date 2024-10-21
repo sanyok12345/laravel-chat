@@ -18,7 +18,7 @@ const listenForMessages = () => {
         } catch (error) {
             console.error(error);
         } finally {
-            setTimeout(poll, 2000);
+            setTimeout(poll, 250);
         }
     };
 
@@ -39,7 +39,7 @@ const updateLocalChatHistory = (messages) => {
 
 const renderMessages = (messages) => {
     const messagesContainer = document.getElementById('messages');
-    
+
     if (messagesContainer.classList.contains('loading')) {
         const loader = messagesContainer.getElementsByTagName('img')[0];
         if (loader) {
@@ -50,22 +50,19 @@ const renderMessages = (messages) => {
 
     messages.forEach(message => {
         const existingMessage = document.querySelector(`.chat-message[data-id="${message.id}"]`);
-        
+
         if (!existingMessage) {
             const div = document.createElement('div');
             div.classList.add('chat-message');
             div.setAttribute('data-id', message.id);
 
             const isOutgoing = message.user?.id === user.id;
-            
             div.classList.add(isOutgoing ? 'outgoing' : 'incoming');
             div.innerHTML = `
                 <strong>${message.user?.name || "User"}</strong>
                 ${message.message}
             `;
             messagesContainer.appendChild(div);
-
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
         }
     });
 };
@@ -84,6 +81,7 @@ const handleSendMessage = async () => {
         input.value = '';
         updateLocalChatHistory([newMessage]);
         renderMessages([newMessage]);
+        scrollChatToBottom();
     } catch (error) {
         console.error(error);
     }
@@ -97,13 +95,24 @@ const preloadProfile = async () => {
     user.nickname = r.nickname;
 };
 
+const loadMessagesFromAPI = async () => {
+    try {
+        const messages = await Client.getMessages();
+        updateLocalChatHistory(messages);
+        renderMessages(messages);
+    } catch (error) {
+        console.error('Ошибка при загрузке сообщений:', error);
+    }
+};
+
+const scrollChatToBottom = () => {
+    const messagesContainer = document.getElementById('messages');
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+};
+
 document.addEventListener('DOMContentLoaded', async () => {
     await preloadProfile();
+    await loadMessagesFromAPI();
     listenForMessages();
-
-    const form = document.getElementById('form');
-    form.addEventListener('submit', event => {
-        event.preventDefault();
-        handleSendMessage();
-    });
+    scrollChatToBottom();
 });
