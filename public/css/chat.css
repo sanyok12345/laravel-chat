@@ -45,6 +45,8 @@
     background-color: #ffffff;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     align-self: flex-start;
+    max-width: 50%;
+    word-wrap: break-word;
 }
 
 .chat-message strong {
@@ -61,6 +63,38 @@
     background-color: #dcf8c6;
 }
 
+.chat-message.incoming .reply {
+    display: flex;
+    flex-direction: column;
+    background-color: #f5f5f5;
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.chat-message.outgoing .reply {
+    display: flex;
+    flex-direction: column;
+    background-color: #dcf8c6;
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.chat-message.incoming .time {
+    font-size: 0.8em;
+    color: #999;
+    margin-top: 5px;
+    margin-right: auto;
+}
+
+.chat-message.outgoing .time {
+    font-size: 0.8em;
+    color: #999;
+    margin-top: 5px;
+    margin-left: auto;
+}
+
 .chat-input {
     display: flex;
     padding: 10px;
@@ -71,6 +105,24 @@
 .chat-input input {
     flex-grow: 1;
     margin-right: 10px;
+}
+
+.chat-container .reply {
+    display: flex;
+    flex-direction: column;
+    background-color: transparent;
+}
+
+.chat-container .reply .user {
+    margin-right: 10px;
+    font-weight: bold;
+    padding: 5px;
+    padding-bottom: 0;
+}
+
+.chat-container .reply .message {
+    flex-grow: 1;
+    padding: 5px;
 }
 
 .chat-header {

@@ -60,9 +60,20 @@ const renderMessages = (messages) => {
             div.classList.add(isOutgoing ? 'outgoing' : 'incoming');
             div.innerHTML = `
                 <strong>${message.user?.name || "User"}</strong>
+                ${message.reply_to_message ? `
+                    <div class="reply">
+                        <strong>${message.reply_to_message.user?.name || "User"}</strong>
+                        ${message.reply_to_message.message}
+                    </div>    
+                ` : ''}
                 ${message.message}
+                <div class="time">${new Date(message.created_at).toLocaleTimeString()}</div>
             `;
+
+            div.addEventListener('dblclick', () => showReplyMessage(message.id));
+
             messagesContainer.appendChild(div);
+            scrollChatToBottom();
         }
     });
 };
@@ -73,8 +84,18 @@ const handleSendMessage = async () => {
 
     if (messageText === '') return;
 
+    if (messageText.length > 256) {
+        alert('Message is too long');
+        return;
+    }
+
+    const reply = document.getElementById('reply');
+    const replyMessage = reply.state;
+    const replyId = replyMessage?.id;
+    hideReplyMessage();
+
     try {
-        const newMessage = await Client.sendMessage(messageText);
+        const newMessage = await Client.sendMessage(messageText, replyId);
         newMessage.user = user;
         newMessage.isOutgoing = true;
 
@@ -108,6 +129,40 @@ const loadMessagesFromAPI = async () => {
 const scrollChatToBottom = () => {
     const messagesContainer = document.getElementById('messages');
     messagesContainer.scrollTop = messagesContainer.scrollHeight;
+};
+
+const showReplyMessage = (messageId) => {
+    hideReplyMessage();
+
+    const reply = document.getElementById('reply');
+    const message = localChatHistory.find(m => m.id === messageId);
+    if (message && message.message.trim() !== '') {
+        const replyDiv = document.createElement('div');
+        replyDiv.classList.add('reply');
+        replyDiv.innerHTML = `
+            <div class="user">
+                ${message.user?.name || "User"}
+            </div>
+            <div class="message">
+                ${message.message}
+            </div>
+        `;
+        reply.style.display = 'flex';
+        reply.state = message;
+
+        replyDiv.addEventListener('click', hideReplyMessage);
+
+        reply.appendChild(replyDiv);
+        scrollChatToBottom();
+    } else {
+        hideReplyMessage();
+    }
+};
+
+const hideReplyMessage = () => {
+    const reply = document.getElementById('reply');
+    reply.innerHTML = '';
+    reply.style.display = 'none';
 };
 
 document.addEventListener('DOMContentLoaded', async () => {

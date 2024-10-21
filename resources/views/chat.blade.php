@@ -23,6 +23,7 @@
                 <div id="messages" class="chat-messages loading">
                     <img class="spinner" src="https://cdn-icons-png.flaticon.com/512/7794/7794282.png" alt="{{ __('chat.loading') }}">
                 </div>
+                <div id="reply" class="reply"></div>
                 <form id="form" class="chat-input" onsubmit="event.preventDefault(); handleSendMessage();">
                     <input id="text" type="text" class="form-control" placeholder="{{ __('chat.type_message') }}" required>
                     <button class="btn btn-primary" type="submit">{{ __('chat.send') }}</button>
