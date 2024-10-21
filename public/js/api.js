@@ -34,7 +34,7 @@ class API {
             }
         };
 
-        xhr.send(JSON.stringify(data));   
+        xhr.send(JSON.stringify(data));
     }
 
     static tryParseJSON(jsonString) {
@@ -55,10 +55,10 @@ class Client extends API {
     }
 
     static async getLatestEvents() {
-        const r = await this.call('GET', `/api/long-poll/messages`, {
+        const r = await this.call('POST', `/api/long-poll/messages`, {
             last_message_id: Client.lastMessageId
         });
-    
+
         if (r && Array.isArray(r.new_messages) && r.new_messages.length > 0) {
             Client.lastMessageId = r.new_messages[r.new_messages.length - 1]?.id || 0;
             return r.new_messages;
@@ -67,11 +67,11 @@ class Client extends API {
             return [];
         }
     }
-    
+
 
     static async sendMessage(message) {
-        return await this.call('POST', '/api/messages', { 
-            message 
+        return await this.call('POST', '/api/messages', {
+            message
         });
     }
 
