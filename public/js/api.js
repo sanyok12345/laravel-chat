@@ -54,6 +54,13 @@ class Client extends API {
         return this.call('GET', '/api/messages');
     }
 
+    static async getMessagesByIds(ids) {
+        const r = await Client.getMessages();
+        return r.filter((message) => {
+            return ids.includes(message.id);
+        });
+    }
+
     static async getLatestEvents() {
         const r = await this.call('POST', `/api/long-poll/messages`, {
             last_message_id: Client.lastMessageId

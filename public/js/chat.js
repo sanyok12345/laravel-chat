@@ -81,6 +81,12 @@ class ChatAPI {
                     ChatAPI.updateLocalChatHistory(messages);
                     callback(ChatAPI.localChatHistory);
                 }
+                const visibleMessages = ChatUI.getVisibleMessages();
+                if (visibleMessages.length > 0) {
+                    const updatedMessages = await Client.getMessagesByIds(visibleMessages.map(m => m.id));
+                    ChatAPI.updateLocalChatHistory(updatedMessages);
+                    callback(ChatAPI.localChatHistory);
+                }
             } catch (error) {
                 console.error(error);
             } finally {
@@ -112,6 +118,8 @@ class ChatUI {
     static renderMessages(messages) {
         const messagesContainer = document.getElementById('messages');
         let shouldScroll = false;
+
+        messages.sort((a, b) => a.id - b.id);
 
         messages.forEach(message => {
             const existingMessageDiv = document.querySelector(`[data-id="${message.id}"]`);
@@ -292,6 +300,19 @@ class ChatUI {
             ChatUI.replyMessageId = messageId;
             ChatUI.updateInfoPanel('Replying to message', message.message);
         }
+    }
+
+    static getVisibleMessages() {
+        const messagesContainer = document.getElementById('messages');
+        const messages = Array.from(messagesContainer.getElementsByClassName('chat-message'));
+        const visibleMessages = messages.filter(message => {
+            const rect = message.getBoundingClientRect();
+            return rect.top >= 0 && rect.bottom <= window.innerHeight;
+        });
+        return visibleMessages.map(message => ({
+            id: parseInt(message.getAttribute('data-id')),
+            element: message
+        }));
     }
 }
 
