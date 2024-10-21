@@ -68,11 +68,23 @@ class Client extends API {
         }
     }
 
-
     static async sendMessage(message, replyId) {
         return await this.call('POST', '/api/messages', { 
             message,
-            reply_to_message_id: replyId
+            reply_to_message_id: replyId ? replyId : undefined
+        });
+    }
+
+    static async deleteMessage(messageId) {
+        return await this.call('DELETE', `/api/messages`, {
+            id: messageId
+        });
+    }
+
+    static async editMessage(messageId, message) {
+        return await this.call('PATCH', `/api/messages`, {
+            id: messageId,
+            message
         });
     }
 
