@@ -11,7 +11,6 @@ use Illuminate\Http\Request;
 
 class ReplyController extends ChatController
 {
-    // app/Http/Controllers/Chats/ReplyController.php
     public function sendReply(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
@@ -37,9 +36,25 @@ class ReplyController extends ChatController
             'created_at' => now(),
             'updated_at' => null,
         ]);
-        Log::info('message', ['message in send message reply' => $message]);
 
-        return response()->json($message, 201);
+        // Fetch the parent message
+        $parentMessage = $message->parentMessage;
+
+        // Format the response
+        $response = [
+            'id' => $message->id,
+            'message' => $message->message,
+            'reply_to_message' => $parentMessage ? [
+                'id' => $parentMessage->id,
+                'message' => $parentMessage->message,
+                'user' => $parentMessage->user->only(['id', 'name', 'username']),
+            ] : null,
+            'user' => $message->user->only(['id', 'name', 'username']),
+            'created_at' => $message->created_at,
+            'updated_at' => $message->updated_at,
+        ];
+
+        return response()->json($response, 201);
     }
 
 }
