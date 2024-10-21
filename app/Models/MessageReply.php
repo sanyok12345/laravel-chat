@@ -5,22 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class MessageReaction extends Model
+class MessageReply extends Model
 {
-    protected $fillable = ['message_id', 'user_id', 'reaction_id'];
+    protected $fillable = ['id','reply_to', 'user_id'];
 
     public function message(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
-        return $this->belongsTo(Message::class);
+        return $this->belongsTo(Message::class,'reply_to');
     }
 
     public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(User::class);
-    }
-
-    public function reaction(): \Illuminate\Database\Eloquent\Relations\BelongsTo
-    {
-        return $this->belongsTo(Reaction::class);
     }
 }

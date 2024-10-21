@@ -16,11 +16,6 @@ class User extends Authenticatable
         return $this->hasMany(Message::class);
     }
 
-    public function reactions(): \Illuminate\Database\Eloquent\Relations\HasMany
-    {
-        return $this->hasMany(Reaction::class);
-    }
-
     public function isAdmin(): bool
     {
         return $this->role === 'admin';
@@ -36,8 +31,4 @@ class User extends Authenticatable
         return $this->id === $message->user_id;
     }
 
-    public function isOwnerOfReaction(Reaction $reaction): bool
-    {
-        return $this->id === $reaction->user_id;
-    }
 }

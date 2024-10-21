@@ -4,15 +4,16 @@ namespace App\Http\Controllers\Chats;
 
 use App\Http\Controllers\Controller;
 use App\Models\Message;
-use App\Models\Reaction;
+use App\Models\MessageReply;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
 
 class ChatController extends Controller
 {
     // Utility method to fetch authenticated user by API token
-    private function getAuthenticatedUser($apiToken)
+    public function getAuthenticatedUser($apiToken)
     {
         if (is_null($apiToken)) {
             return response()->json([
@@ -25,9 +26,17 @@ class ChatController extends Controller
     // Send a message
     public function sendMessage(Request $request): \Illuminate\Http\JsonResponse
     {
-        $this->validate($request, [
-            'message' => 'required|string',
-        ]);
+        if ($request->has('message') && $request->has('reply_to_message_id')) {
+            return app('App\Http\Controllers\Chats\ReplyController')->sendReply($request);
+        }
+
+        try {
+            $this->validate($request, [
+                'message' => 'required|string',
+            ]);
+        } catch (ValidationException $e) {
+            return response()->json(['message' => $e->getMessage()], 400);
+        }
 
         $user = $this->getAuthenticatedUser($request->header('api-token'));
 
@@ -41,20 +50,50 @@ class ChatController extends Controller
             'user_id' => $user->id,
             'message' => $request->message,
             'created_at' => now(),
-            'updated_at' => now(),
+            'updated_at' => null,
         ]);
 
         return response()->json($message, 201);
     }
 
     // Retrieve all messages
+    // app/Http/Controllers/Chats/ChatController.php
+// app/Http/Controllers/Chats/ChatController.php
+    // app/Http/Controllers/Chats/ChatController.php
     public function getMessages(): \Illuminate\Http\JsonResponse
     {
-        //add name field from users table to messages
-        $messages = Message::with('user:id,name')->get();
+        // Fetch all messages along with the user who posted them and the message they are replying to
+        $messages = Message::with([
+            'user:id,name',               // Get the user who posted the message
+            'parentMessage.user:id,name'  // Load the parent message (the message this one replies to) and its user
+        ])->get();
 
-        return response()->json($messages);
+        // Format the response
+        $formattedMessages = $messages->map(function ($message) {
+            // If the message is a reply, fetch the parent message
+            $reply_to_message = null;
+
+            if ($message->parentMessage) {
+                $reply_to_message = [
+                    'id' => $message->parentMessage->id,
+                    'text' => $message->parentMessage->message,
+                    'user' => $message->parentMessage->user,
+                ];
+            }
+
+            return [
+                'id' => $message->id,
+                'created_at' => $message->created_at,
+                'updated_at' => $message->updated_at,
+                'text' => $message->message,
+                'reply_to_message' => $reply_to_message,  // Parent message (if this is a reply)
+                'user' => $message->user,
+            ];
+        });
+
+        return response()->json($formattedMessages);
     }
+
 
     // Delete a message
     public function deleteMessage(Request $request): \Illuminate\Http\JsonResponse
@@ -106,74 +145,6 @@ class ChatController extends Controller
         ]);
 
         return response()->json($message);
-    }
-
-    // React to a message
-    public function reactToMessage(Request $request): \Illuminate\Http\JsonResponse
-    {
-        $this->validate($request, [
-            'message_id' => 'required|integer',
-            'reaction_id' => 'required|integer',
-        ]);
-
-        $user = $this->getAuthenticatedUser($request->header('api-token'));
-
-        if (!$user) {
-            return response()->json(['message' => 'Unauthorized'], 401);
-        }
-
-        $message = Message::find($request->message_id);
-        $reaction = Reaction::find($request->reaction_id);
-
-        if ($message && $reaction) {
-            $message->reactions()->attach($reaction, ['user_id' => $user->id]);
-            return response()->json($message->reactions);
-        }
-
-        return response()->json(['message' => 'Invalid message or reaction'], 400);
-    }
-
-    // Unreact from a message
-    public function unreactToMessage(Request $request): \Illuminate\Http\JsonResponse
-    {
-        $this->validate($request, [
-            'message_id' => 'required|integer',
-            'reaction_id' => 'required|integer',
-        ]);
-
-        $message = Message::find($request->message_id);
-        $reaction = Reaction::find($request->reaction_id);
-
-        if ($message && $reaction) {
-            $message->reactions()->detach($reaction);
-            return response()->json($message->reactions);
-        }
-
-        return response()->json(['message' => 'Invalid message or reaction'], 400);
-    }
-
-    // Get message reactions
-    public function getMessageReactions(Request $request): \Illuminate\Http\JsonResponse
-    {
-        $this->validate($request, [
-            'message_id' => 'required|integer',
-        ]);
-
-        $message = Message::find($request->message_id);
-
-        return response()->json($message ? $message->reactions : []);
-    }
-
-    // Get the count of message reactions
-    public function getMessageReactionsCount(Request $request): \Illuminate\Http\JsonResponse
-    {
-        $this->validate($request, [
-            'message_id' => 'required|integer',
-        ]);
-
-        $message = Message::find($request->message_id);
-
-        return response()->json($message ? $message->reactions->count() : 0);
     }
 
     // Return the chat index view

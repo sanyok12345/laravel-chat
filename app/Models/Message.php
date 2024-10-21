@@ -6,18 +6,20 @@ use Illuminate\Database\Eloquent\Model;
 
 class Message extends Model
 {
-
-    protected $fillable = ['message', 'user_id'];
+    protected $fillable = ['message', 'user_id', 'reply_to'];
 
     public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function reactions(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    public function replies(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->belongsToMany(Reaction::class, 'message_reactions')
-            ->withPivot('user_id')
-            ->withTimestamps();
+        return $this->hasMany(Message::class, 'reply_to');
+    }
+
+    public function parentMessage(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(Message::class, 'reply_to'); // The message this one is replying to
     }
 }
