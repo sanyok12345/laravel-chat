@@ -69,9 +69,10 @@ class Client extends API {
     }
     
 
-    static async sendMessage(message) {
+    static async sendMessage(message, replyId) {
         return await this.call('POST', '/api/messages', { 
-            message 
+            message,
+            reply_to_message_id: replyId
         });
     }
 
