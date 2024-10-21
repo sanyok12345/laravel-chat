@@ -112,28 +112,29 @@ class ChatUI {
     static renderMessages(messages) {
         const messagesContainer = document.getElementById('messages');
         let shouldScroll = false;
-    
+
         messages.forEach(message => {
-            const messageDiv = ChatUI.createMessageElement(message);
-            if (messageDiv) {
-                messagesContainer.appendChild(messageDiv);
-                shouldScroll = true;
+            const existingMessageDiv = document.querySelector(`[data-id="${message.id}"]`);
+            if (existingMessageDiv) {
+                ChatUI.updateMessageElement(existingMessageDiv, message);
+            } else {
+                const messageDiv = ChatUI.createMessageElement(message);
+                if (messageDiv) {
+                    messagesContainer.appendChild(messageDiv);
+                    shouldScroll = true;
+                }
             }
         });
-    
+
         if (shouldScroll) {
             ChatUI.scrollChatToBottom();
         }
     }
 
     static createMessageElement(message) {
-        if (document.querySelector(`[data-id="${message.id}"]`)) {
-            return null;
-        }
-    
         const div = document.createElement('div');
         const isOutgoing = message.user?.id === ChatAPI.user.id;
-    
+
         div.classList.add('chat-message', isOutgoing ? 'outgoing' : 'incoming');
         div.setAttribute('data-id', message.id);
         div.innerHTML = `
@@ -153,11 +154,35 @@ class ChatUI {
                 ${new Date(message.created_at).toLocaleTimeString()}
             </div>
         `;
-    
+
         div.addEventListener('dblclick', () => ChatUI.showReplyMessage(message.id));
         div.addEventListener('contextmenu', (event) => ChatUI.showContextMenu(message.id, isOutgoing, event));
-    
+
         return div;
+    }
+
+    static updateMessageElement(element, message) {
+        const isOutgoing = message.user?.id === ChatAPI.user.id;
+
+        element.classList.add('chat-message', isOutgoing ? 'outgoing' : 'incoming');
+        element.setAttribute('data-id', message.id);
+        element.innerHTML = `
+            <strong>
+                ${message.user?.name || "User"}
+            </strong>
+            ${message.reply_to_message ? `
+                <div class="reply">
+                    <strong>
+                        ${message.reply_to_message.user?.name || "User"}
+                    </strong>
+                    ${message.reply_to_message.message}
+                </div>
+            ` : ''}
+            ${message.message}
+            <div class="time">
+                ${new Date(message.created_at).toLocaleTimeString()}
+            </div>
+        `;
     }
 
     static async handleSendMessage() {
@@ -208,11 +233,18 @@ class ChatUI {
     static async handleRemoveMessage() {
         try {
             await ChatAPI.deleteMessage(ChatUI.selectedMessageId);
-            ChatUI.renderMessages(ChatAPI.localChatHistory);
+            ChatUI.removeMessageElement(ChatUI.selectedMessageId);
         } catch (error) {
             console.error('Error deleting message:', error);
         }
         ChatUI.hideContextMenu();
+    }
+
+    static removeMessageElement(messageId) {
+        const messageElement = document.querySelector(`[data-id="${messageId}"]`);
+        if (messageElement) {
+            messageElement.remove();
+        }
     }
 
     static showContextMenu(messageId, isOutgoing, event) {
@@ -235,7 +267,7 @@ class ChatUI {
 
     static scrollChatToBottom() {
         const messagesContainer = document.getElementById('messages');
-        messagesContainer.scrollTop = '9999999';
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
     }
 
     static clearInfoPanel() {
