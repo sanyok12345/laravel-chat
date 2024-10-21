@@ -36,7 +36,7 @@ class UserController extends Controller
 
         $apiToken = $user->token;
 
-        return redirect()->route('chat', ['apiToken' => $apiToken]);
+        return redirect()->route('chat');
 
     }
 
