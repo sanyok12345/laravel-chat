@@ -17,8 +17,6 @@ Route::middleware([EnsureApiTokenIsValid::class])->group(function () {
     //Chat default view
     Route::get('/chat', [ChatController::class, 'index']);
 
-    //Replies
-    Route::post('message/get-replies', [ReplyController::class, 'getReplies']);
 
 
     //Promote user to admin
