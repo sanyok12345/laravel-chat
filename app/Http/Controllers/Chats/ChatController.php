@@ -66,27 +66,7 @@ class ChatController extends Controller
         ])->get();
 
         // Format the response
-        $formattedMessages = $messages->map(function ($message) {
-            // If the message is a reply, fetch the parent message
-            $reply_to_message = null;
-
-            if ($message->parentMessage) {
-                $reply_to_message = [
-                    'id' => $message->parentMessage->id,
-                    'message' => $message->parentMessage->message,
-                    'user' => $message->parentMessage->user,
-                ];
-            }
-
-            return [
-                'id' => $message->id,
-                'created_at' => $message->created_at,
-                'updated_at' => $message->updated_at,
-                'message' => $message->message,
-                'reply_to_message' => $reply_to_message,  // Parent message (if this is a reply)
-                'user' => $message->user,
-            ];
-        });
+        $formattedMessages = $messages->map->formatMessage()->sortBy('id', SORT_REGULAR, false);;
 
         return response()->json($formattedMessages);
     }

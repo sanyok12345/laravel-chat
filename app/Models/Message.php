@@ -22,4 +22,26 @@ class Message extends Model
     {
         return $this->belongsTo(Message::class, 'reply_to'); // The message this one is replying to
     }
+
+    public function formatMessage()
+    {
+        $reply_to_message = null;
+
+        if ($this->parentMessage) {
+            $reply_to_message = [
+                'id' => $this->parentMessage->id,
+                'message' => $this->parentMessage->message,
+                'user' => $this->parentMessage->user,
+            ];
+        }
+
+        return [
+            'id' => $this->id,
+            'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
+            'message' => $this->message,
+            'reply_to_message' => $reply_to_message,
+            'user' => $this->user,
+        ];
+    }
 }
