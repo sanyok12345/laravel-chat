@@ -57,9 +57,6 @@ class ChatController extends Controller
     }
 
     // Retrieve all messages
-    // app/Http/Controllers/Chats/ChatController.php
-// app/Http/Controllers/Chats/ChatController.php
-    // app/Http/Controllers/Chats/ChatController.php
     public function getMessages(): \Illuminate\Http\JsonResponse
     {
         // Fetch all messages along with the user who posted them and the message they are replying to
@@ -76,7 +73,7 @@ class ChatController extends Controller
             if ($message->parentMessage) {
                 $reply_to_message = [
                     'id' => $message->parentMessage->id,
-                    'text' => $message->parentMessage->message,
+                    'message' => $message->parentMessage->message,
                     'user' => $message->parentMessage->user,
                 ];
             }
@@ -85,7 +82,7 @@ class ChatController extends Controller
                 'id' => $message->id,
                 'created_at' => $message->created_at,
                 'updated_at' => $message->updated_at,
-                'text' => $message->message,
+                'message' => $message->message,
                 'reply_to_message' => $reply_to_message,  // Parent message (if this is a reply)
                 'user' => $message->user,
             ];
