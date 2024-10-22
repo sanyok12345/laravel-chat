@@ -15,12 +15,12 @@ class Message extends Model
 
     public function replies(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->hasMany(Message::class, 'reply_to');
+        return $this->hasMany(MessageReply::class, 'reply_to');
     }
 
     public function parentMessage(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
-        return $this->belongsTo(Message::class, 'reply_to'); // The message this one is replying to
+        return $this->belongsTo(MessageReply::class, 'reply_to'); // The message this one is replying to
     }
 
     public function formatMessage()
