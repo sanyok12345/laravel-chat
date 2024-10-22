@@ -24,9 +24,7 @@ class API {
 
         xhr.onreadystatechange = () => {
             if (xhr.readyState === 4) {
-                if ([
-                    200, 201, 204
-                ].includes(xhr.status)) {
+                if ([200, 201, 204].includes(xhr.status)) {
                     callback(null, API.tryParseJSON(xhr.responseText));
                 } else {
                     callback(xhr.responseText);
@@ -51,56 +49,93 @@ class Client extends API {
     static lastMessageId = 0;
 
     static async getMessages() {
-        const r = await this.call('GET', '/api/messages');
-        const messages = r.new_messages || r;
+        try {
+            const r = await this.call('GET', '/api/messages');
+            const messages = r.new_messages || r;
 
-        if (!Array.isArray(messages)) {
-            return Object.values(messages);
+            if (!Array.isArray(messages)) {
+                return Object.values(messages);
+            }
+
+            return messages;
+        } catch (error) {
+            console.error('Error fetching messages:', error);
+            return [];
         }
-
-        return messages;
     }
 
     static async getMessagesByIds(ids) {
-        return Client.getMessages();
+        try {
+            const r = await Client.getMessages();
+            return r.messages || [];
+        } catch (error) {
+            console.error('Error fetching messages by IDs:', error);
+            return [];
+        }
     }
 
     static async getLatestEvents() {
-        const r = await this.call('POST', `/api/long-poll/messages`, {
-            last_message_id: Client.lastMessageId
-        });
+        try {
+            const r = await this.call('POST', `/api/long-poll/messages`, {
+                last_message_id: Client.lastMessageId
+            });
 
-        if (r && Array.isArray(r.new_messages) && r.new_messages.length > 0) {
-            const messages = Object.values(r.new_messages);
-            Client.lastMessageId = messages[messages.length - 1].id - 1;
-            
-            return messages;
-        } else {
+            if (r) {
+                const messages = Object.values(r.new_messages);
+                console.log('New messages:', messages);
+
+                Client.lastMessageId = messages[messages.length - 1].id;
+                return messages;
+            } else {
+                return [];
+            }
+        } catch (error) {
+            console.error('Error fetching latest events:', error);
             return [];
         }
     }
 
     static async sendMessage(message, replyId) {
-        return await this.call('POST', '/api/messages', {
-            message,
-            reply_to_message_id: replyId ? replyId : undefined
-        });
+        try {
+            return await this.call('POST', '/api/messages', {
+                message,
+                reply_to_message_id: replyId ? replyId : undefined
+            });
+        } catch (error) {
+            console.error('Error sending message:', error);
+            throw error;
+        }
     }
 
     static async deleteMessage(messageId) {
-        return await this.call('DELETE', `/api/messages`, {
-            id: messageId
-        });
+        try {
+            return await this.call('DELETE', `/api/messages`, {
+                id: messageId
+            });
+        } catch (error) {
+            console.error('Error deleting message:', error);
+            throw error;
+        }
     }
 
     static async editMessage(messageId, message) {
-        return await this.call('PATCH', `/api/messages`, {
-            id: messageId,
-            message
-        });
+        try {
+            return await this.call('PATCH', `/api/messages`, {
+                id: messageId,
+                message
+            });
+        } catch (error) {
+            console.error('Error editing message:', error);
+            throw error;
+        }
     }
 
     static async getProfile() {
-        return await this.call('GET', '/get-profile');
+        try {
+            return await this.call('GET', '/get-profile');
+        } catch (error) {
+            console.error('Error fetching profile:', error);
+            throw error;
+        }
     }
 }
