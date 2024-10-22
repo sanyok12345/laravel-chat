@@ -51,8 +51,7 @@ class Client extends API {
     static lastMessageId = 0;
 
     static async getMessages() {
-        const r = await this.call('GET', '/api/messages');
-        return r.new_messages || r;
+        return this.call('GET', '/api/messages');
     }
 
     static async getMessagesByIds(ids) {
