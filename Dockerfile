@@ -37,5 +37,6 @@ EXPOSE 80
 
 RUN php artisan key:generate
 RUN php artisan migrate
+RUN php artisan db:seed
 
 CMD ["apache2-foreground"]
