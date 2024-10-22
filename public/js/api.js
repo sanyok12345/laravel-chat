@@ -62,10 +62,7 @@ class Client extends API {
     }
 
     static async getMessagesByIds(ids) {
-        const r = await Client.getMessages();
-        return r.filter((message) => {
-            return ids.includes(message.id);
-        });
+        return Client.getMessages();
     }
 
     static async getLatestEvents() {
@@ -75,7 +72,7 @@ class Client extends API {
 
         if (r && Array.isArray(r.new_messages) && r.new_messages.length > 0) {
             const messages = Object.values(r.new_messages);
-            Client.lastMessageId = messages[messages.length - 1].id;
+            Client.lastMessageId = messages[messages.length - 1].id - 1;
             
             return messages;
         } else {
