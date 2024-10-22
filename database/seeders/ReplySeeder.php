@@ -18,8 +18,8 @@ class ReplySeeder extends Seeder
         for ($i = 0; $i < 10; $i++) {
             DB::table('message_replies')->insert([
                 'user_id' => DB::table('users')->inRandomOrder()->first()->id,
-                'massage_id' => DB::table('messages')->inRandomOrder()->first()->id,
-                'text' => 'I agree',
+                'reply_to' => DB::table('messages')->inRandomOrder()->first()->id,
+                'id' => DB::table('messages')->inRandomOrder()->first()->id,
             ]);
         }
     }
