@@ -52,7 +52,13 @@ class Client extends API {
 
     static async getMessages() {
         const r = await this.call('GET', '/api/messages');
-        return r.new_messages || r;
+        const messages = r.new_messages || r;
+
+        if (!Array.isArray(messages)) {
+            return Object.values(messages);
+        }
+
+        return messages;
     }
 
     static async getMessagesByIds(ids) {
@@ -68,10 +74,11 @@ class Client extends API {
         });
 
         if (r && Array.isArray(r.new_messages) && r.new_messages.length > 0) {
-            Client.lastMessageId = r.new_messages[r.new_messages.length - 1]?.id || 0;
-            return r.new_messages;
+            const messages = Object.values(r.new_messages);
+            Client.lastMessageId = messages[messages.length - 1].id;
+            
+            return messages;
         } else {
-            Client.lastMessageId = 0;
             return [];
         }
     }

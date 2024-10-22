@@ -3,8 +3,12 @@ class ChatAPI {
     static localChatHistory = [];
 
     static async preloadProfile() {
-        const profile = await Client.getProfile();
-        Object.assign(ChatAPI.user, profile);
+        try {
+            const profile = await Client.getProfile();
+            Object.assign(ChatAPI.user, profile);
+        } catch (error) {
+            console.error('Error loading profile:', error);
+        }
     }
 
     static async loadMessagesFromAPI() {
@@ -24,7 +28,7 @@ class ChatAPI {
             ChatAPI.localChatHistory.push(newMessage);
             return newMessage;
         } catch (error) {
-            console.error(error);
+            console.error('Error sending message:', error);
             throw error;
         }
     }
@@ -35,6 +39,7 @@ class ChatAPI {
             const message = ChatAPI.localChatHistory.find(m => m.id === messageId);
             if (message) {
                 message.message = newText;
+                console.log('Message edited:', message);
             }
         } catch (error) {
             console.error('Error editing message:', error);
@@ -48,6 +53,7 @@ class ChatAPI {
             const index = ChatAPI.localChatHistory.findIndex(m => m.id === messageId);
             if (index !== -1) {
                 ChatAPI.localChatHistory.splice(index, 1);
+                console.log('Message deleted:', messageId);
             }
         } catch (error) {
             console.error('Error deleting message:', error);
@@ -67,13 +73,23 @@ class ChatAPI {
                 existingMessage.message = message.message;
             }
         });
+
+        console.log('Local chat history updated:', ChatAPI.localChatHistory);
     }
 
     static async listenForMessages(callback) {
         if (Client.isPolling) return;
-
+    
         Client.isPolling = true;
 
+        try {
+            const initialMessages = await Client.getLatestEvents();
+            ChatAPI.updateLocalChatHistory(initialMessages);
+            callback(ChatAPI.localChatHistory);
+        } catch (error) {
+            console.error('Error fetching initial messages:', error);
+        }
+    
         const poll = async () => {
             try {
                 const messages = await Client.getLatestEvents();
@@ -88,12 +104,12 @@ class ChatAPI {
                     callback(ChatAPI.localChatHistory);
                 }
             } catch (error) {
-                console.error(error);
+                console.error('Error polling messages:', error);
             } finally {
                 setTimeout(poll, 250);
             }
         };
-
+    
         poll();
     }
 }
@@ -137,6 +153,7 @@ class ChatUI {
         if (shouldScroll) {
             ChatUI.scrollChatToBottom();
         }
+        console.log('Messages rendered:', messages);
     }
 
     static createMessageElement(message) {
@@ -204,7 +221,7 @@ class ChatUI {
             await ChatUI.confirmEditMessage();
         } else {
             try {
-                const newMessage = await ChatAPI.sendMessage(messageText, ChatUI.replyMessageId);
+                await ChatAPI.sendMessage(messageText, ChatUI.replyMessageId);
                 ChatUI.renderMessages(ChatAPI.localChatHistory);
             } catch (error) {
                 console.error('Error sending message:', error);
