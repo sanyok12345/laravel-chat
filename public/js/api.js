@@ -84,7 +84,7 @@ class Client extends API {
                 const messages = Object.values(r.new_messages);
                 console.log('New messages:', messages);
 
-                Client.lastMessageId = messages[messages.length - 1].id;
+                Client.lastMessageId = messages[messages.length - 1]?.id || 0;
                 return messages;
             } else {
                 return [];
