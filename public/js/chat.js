@@ -36,7 +36,7 @@ class ChatAPI {
     static async editMessage(messageId, newText) {
         try {
             await Client.editMessage(messageId, newText);
-            const message = ChatAPI.localChatHistory.find(m => m.id === messageId);
+            const message = ChatAPI.localChatHistory.find(m => m.id == messageId);
             if (message) {
                 message.message = newText;
                 console.log('Message edited:', message);
@@ -51,7 +51,7 @@ class ChatAPI {
     static async deleteMessage(messageId) {
         try {
             await Client.deleteMessage(messageId);
-            const index = ChatAPI.localChatHistory.findIndex(m => m.id === messageId);
+            const index = ChatAPI.localChatHistory.findIndex(m => m.id == messageId);
             if (index !== -1) {
                 ChatAPI.localChatHistory.splice(index, 1);
                 console.log('Message deleted:', messageId);
@@ -64,7 +64,7 @@ class ChatAPI {
 
     static updateLocalChatHistory(messages) {
         messages.forEach(message => {
-            const existingMessage = ChatAPI.localChatHistory.find(m => m.id === message.id);
+            const existingMessage = ChatAPI.localChatHistory.find(m => m.id == message.id);
             if (!existingMessage) {
                 ChatAPI.localChatHistory.push({
                     ...message,
@@ -313,7 +313,7 @@ class ChatUI {
     }
 
     static showReplyMessage(messageId) {
-        const message = ChatAPI.localChatHistory.find(m => m.id === messageId);
+        const message = ChatAPI.localChatHistory.find(m => m.id == messageId);
         if (message && message.message.trim() !== '') {
             ChatUI.replyMessageId = messageId;
             ChatUI.updateInfoPanel('Replying to message', message.message);
