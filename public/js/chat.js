@@ -41,6 +41,7 @@ class ChatAPI {
                 message.message = newText;
                 console.log('Message edited:', message);
                 ChatUI.renderMessages(ChatAPI.localChatHistory);
+                ChatUI.updateReplyMessages(messageId, newText);
             }
         } catch (error) {
             console.error('Error editing message:', error);
@@ -193,6 +194,18 @@ class ChatUI {
         return div;
     }
 
+    static updateReplyMessages(messageId, newText) {
+        ChatAPI.localChatHistory.forEach(message => {
+            if (message.reply_to_message && message.reply_to_message.id == messageId) {
+                message.reply_to_message.message = newText;
+            }
+            if (message.id == messageId) {
+                message.message = newText;
+            }
+        });
+        ChatUI.renderMessages(ChatAPI.localChatHistory);
+    }
+
     static updateMessageElement(element, message) {
         const isOutgoing = message.user?.id === ChatAPI.user.id;
 
@@ -253,9 +266,9 @@ class ChatUI {
     }
 
     static async handleEditMessage() {
-        const message = ChatAPI.localChatHistory.find(m => m.id === ChatUI.selectedMessageId);
+        const message = ChatAPI.localChatHistory.find(m => m.id == ChatUI.selectedMessageId);
         if (message) {
-            document.getElementById('text').value = message.message;
+            document.getElementById('text').value = message.meassage;
             document.getElementById('edit-message-id').value = ChatUI.selectedMessageId;
             ChatUI.updateInfoPanel('Editing message', message.message);
         }
