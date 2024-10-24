@@ -134,6 +134,11 @@ class ChatUI {
 
     static renderMessages(messages) {
         const messagesContainer = document.getElementById('messages');
+
+        if (messagesContainer.getElementsByClassName('spinner')[0]) {
+            messagesContainer.innerHTML = '';
+        }
+
         let shouldScroll = false;
 
         messages.sort((a, b) => a.id - b.id);
