@@ -137,6 +137,7 @@ class ChatUI {
 
         if (messagesContainer.getElementsByClassName('spinner')[0]) {
             messagesContainer.innerHTML = '';
+            messagesContainer.style.justifyContent = 'flex-start';
         }
 
         let shouldScroll = false;
