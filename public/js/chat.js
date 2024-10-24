@@ -40,6 +40,7 @@ class ChatAPI {
             if (message) {
                 message.message = newText;
                 console.log('Message edited:', message);
+                ChatUI.renderMessages(ChatAPI.localChatHistory);
             }
         } catch (error) {
             console.error('Error editing message:', error);
